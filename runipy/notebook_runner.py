@@ -113,6 +113,21 @@ class NotebookRunner(object):
         """
         Run a notebook cell and update the output of that cell in-place.
         """
+
+        #Changes to ensure proper order of pylab and matplotlib
+        if 'from pylab import *' in cell.input:
+            cell.input = cell.input.replace('from pylab import *', '')
+            cell.input = 'from pylab import *\n' + cell.input
+
+        if 'import matplotlib\n' in cell.input:
+            cell.input = cell.input.replace('import matplotlib\n', '\n')
+
+        if self.first_cell:
+            self.first_cell = False
+            cell.input = 'import matplotlib\nmatplotlib.use(\'pgf\')\n' + cell.input
+
+        cell.input = cell.input.replace('%matplotlib inline', '')
+
         logging.info('Running cell:\n%s\n', cell.input)
         self.kc.execute(cell.input)
         reply = self.kc.get_shell_msg()
