@@ -42,6 +42,9 @@ class NotebookRunner(object):
             mpl_inline=False,
             profile_dir=None,
             working_dir=None):
+
+        self.first_cell = True
+
         self.km = KernelManager()
 
         args = []
